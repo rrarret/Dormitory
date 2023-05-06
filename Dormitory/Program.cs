@@ -16,10 +16,14 @@ internal class Program
 
         Console.WriteLine("Enter announcement description: ");
         var announcementDescription = Console.ReadLine();
+        if (string.IsNullOrEmpty(announcementTitle))
+        {
+            Console.WriteLine("Title is required.");
+        }
 
-        //vejme _ sepse sna duhet response qe na kthen ky kod thjesht 
-        //
-        _ = context.Announcements.Add(new Announcement
+            //vejme _ sepse sna duhet response qe na kthen ky kod thjesht 
+            //duam te shtojme nje announcement te ri
+            _ = context.Announcements.Add(new Announcement
         {
             Title = announcementTitle,
             Description = announcementDescription,

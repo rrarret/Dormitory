@@ -50,6 +50,12 @@ namespace Dormitory.DAL
                 entity.Property(e => e.Title)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.Room)
+                    .WithMany(p => p.Announcements)
+                    .HasForeignKey(d => d.RoomId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Room_Announcements");
             });
 
             modelBuilder.Entity<Application>(entity =>

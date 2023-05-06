@@ -16,6 +16,10 @@ namespace Dormitory.DAL
         public DateTime PublishedDate { get; set; }
         public bool? IsActive { get; set; }
 
+        //foreign key!
+        public int RoomId { get; set; }
+
         public virtual ICollection<Application> Applications { get; set; }
+        public virtual Room Room { get; set; } = null!;
     }
 }
