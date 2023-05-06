@@ -27,7 +27,7 @@ namespace Dormitory.DAL
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=DESKTOP-DUOVS6V;Database=Dormitory;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=.\\SQLSERVEREXPRES;Database=Dormitory;Trusted_Connection=True;");
             }
         }
 
