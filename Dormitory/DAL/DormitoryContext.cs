@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Dormitory.Models
+namespace Dormitory.DAL
 {
     public partial class DormitoryContext : DbContext
     {
@@ -19,7 +19,8 @@ namespace Dormitory.Models
         public virtual DbSet<Announcement> Announcements { get; set; } = null!;
         public virtual DbSet<Application> Applications { get; set; } = null!;
         public virtual DbSet<Dormitory> Dormitories { get; set; } = null!;
-        public virtual DbSet<DormitoryStudent> DormitoryStudents { get; set; } = null!;
+        public virtual DbSet<Room> Rooms { get; set; } = null!;
+        public virtual DbSet<RoomStudent> RoomStudents { get; set; } = null!;
         public virtual DbSet<Student> Students { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -81,32 +82,43 @@ namespace Dormitory.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.EndDate).HasColumnType("datetime");
-
                 entity.Property(e => e.Name)
                     .HasMaxLength(50)
                     .IsUnicode(false);
-
-                entity.Property(e => e.StartDate).HasColumnType("datetime");
             });
 
-            modelBuilder.Entity<DormitoryStudent>(entity =>
+            modelBuilder.Entity<Room>(entity =>
             {
-                entity.ToTable("DormitoryStudent");
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Name).HasMaxLength(50);
+
+                entity.HasOne(d => d.Dormitory)
+                    .WithMany(p => p.Rooms)
+                    .HasForeignKey(d => d.DormitoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Rooms_Dormitories");
+            });
+
+            modelBuilder.Entity<RoomStudent>(entity =>
+            {
+                entity.ToTable("RoomStudent");
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.HasOne(d => d.Dormitory)
-                    .WithMany(p => p.DormitoryStudents)
-                    .HasForeignKey(d => d.DormitoryId)
+                entity.Property(e => e.StartDate).HasColumnType("date");
+
+                entity.HasOne(d => d.Room)
+                    .WithMany(p => p.RoomStudents)
+                    .HasForeignKey(d => d.RoomId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_DormitoryStudent_Dormitories");
+                    .HasConstraintName("FK_RoomStudent_Rooms");
 
                 entity.HasOne(d => d.Student)
-                    .WithMany(p => p.DormitoryStudents)
+                    .WithMany(p => p.RoomStudents)
                     .HasForeignKey(d => d.StudentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_DormitoryStudent_Students");
+                    .HasConstraintName("FK_RoomStudent_Students");
             });
 
             modelBuilder.Entity<Student>(entity =>
